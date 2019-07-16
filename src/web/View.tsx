@@ -99,6 +99,8 @@ export class View extends ViewBase<RX.Types.ViewProps, RX.Types.Stateless, RX.Vi
         focusArbitrator: PropTypes.object
     };
 
+    static usePointerEvents = window.PointerEvent !== undefined;
+
     private _focusManager: FocusManager | undefined;
     private _limitFocusWithin = false;
     private _isFocusLimited = false;
@@ -281,6 +283,48 @@ export class View extends ViewBase<RX.Types.ViewProps, RX.Types.Stateless, RX.Vi
         }
     }
 
+    private _onTouchStart = (e: RX.Types.TouchEvent) => {
+        if (this.props.onTouchStart) {
+            this.props.onTouchStart(e);
+        }
+        if (this.props.onResponderGrant) {
+            this.props.onResponderGrant(e);
+        }
+        if (this.props.onResponderStart) {
+            this.props.onResponderStart(e);
+        }
+    }
+
+    private _onTouchMove = (e: RX.Types.TouchEvent) => {
+        if (this.props.onTouchMove) {
+            this.props.onTouchMove(e);
+        }
+        if (this.props.onResponderMove) {
+            this.props.onResponderMove(e);
+        }
+    }
+
+    private _onTouchEnd = (e: RX.Types.TouchEvent) => {
+        if (this.props.onTouchEnd) {
+            this.props.onTouchEnd(e);
+        }
+        if (this.props.onResponderRelease) {
+            this.props.onResponderRelease(e);
+        }
+        if (this.props.onResponderEnd) {
+            this.props.onResponderEnd(e);
+        }
+    }
+
+    private _onTouchCancel = (e: RX.Types.TouchEvent) => {
+        if (this.props.onTouchCancel) {
+            this.props.onTouchCancel(e);
+        }
+        if (this.props.onResponderTerminate) {
+            this.props.onResponderTerminate(e);
+        }
+    }
+
     setFocusRestricted(restricted: boolean) {
         if (!this._focusManager || !this.props.restrictFocusWithin) {
             if (AppConfig.isDevelopmentMode()) {
@@ -324,6 +368,7 @@ export class View extends ViewBase<RX.Types.ViewProps, RX.Types.Stateless, RX.Vi
         let ariaRole = AccessibilityUtil.accessibilityTraitToString(this.props.accessibilityTraits);
         const tabIndex = this.props.tabIndex;
         const ariaSelected = AccessibilityUtil.accessibilityTraitToAriaSelected(this.props.accessibilityTraits);
+        const ariaChecked = AccessibilityUtil.accessibilityTraitToAriaChecked(this.props.accessibilityTraits);
         const isAriaHidden = AccessibilityUtil.isHidden(this.props.importantForAccessibility);
         const accessibilityLabel = this.props.accessibilityLabel;
         const ariaLabelledBy = this.props.ariaLabelledBy;
@@ -342,6 +387,28 @@ export class View extends ViewBase<RX.Types.ViewProps, RX.Types.Stateless, RX.Vi
             ariaRole = 'none';
         }
 
+        const pointerEvents = View.usePointerEvents ? {
+            onPointerEnter:  this.props.onMouseEnter,
+            onPointerLeave: this.props.onMouseLeave,
+            onPointerOver: this.props.onMouseOver,
+            onPointerMove: this.props.onMouseMove,
+            onPointerDown: this.props.onPressIn,
+            onPointerDownCapture: this.props.onPressInCapture,
+            onPointerUp: this.props.onPressOut,
+            onPointerUpCapture: this.props.onPressOutCapture,
+            onPointerCancel: this.props.onPressOut,
+            onPointerCancelCapture: this.props.onPressOutCapture
+        } : {
+            onMouseEnter: this.props.onMouseEnter,
+            onMouseLeave: this.props.onMouseLeave,
+            onMouseOver: this.props.onMouseOver,
+            onMouseMove: this.props.onMouseMove,
+            onMouseDown: this.props.onPressIn,
+            onMouseDownCapture: this.props.onPressInCapture,
+            onMouseUp: this.props.onPressOut,
+            onMouseUpCapture: this.props.onPressOutCapture
+        };
+
         const props: React.HTMLAttributes<any> = {
             role: ariaRole,
             tabIndex: tabIndex,
@@ -350,22 +417,29 @@ export class View extends ViewBase<RX.Types.ViewProps, RX.Types.Stateless, RX.Vi
             'aria-label': accessibilityLabel,
             'aria-hidden': isAriaHidden,
             'aria-selected': ariaSelected,
+            'aria-checked': ariaChecked,
             'aria-labelledby': ariaLabelledBy,
             'aria-roledescription': ariaRoleDescription,
             'aria-live': ariaLive,
             'aria-valuenow': ariaValueNow,
+
             onContextMenu: this.props.onContextMenu,
-            onMouseEnter: this.props.onMouseEnter,
-            onMouseLeave: this.props.onMouseLeave,
-            onMouseOver: this.props.onMouseOver,
-            onMouseMove: this.props.onMouseMove,
+            onContextMenuCapture: this.props.onContextMenuCapture,
+            ...pointerEvents,
+
             // Weird things happen: ReactXP.Types.Touch is not assignable to React.Touch
-            onTouchStart: this.props.onResponderStart as React.HTMLAttributes<any>['onTouchStart'],
+            onTouchStart: this.props.onTouchStart || this.props.onResponderStart || this.props.onResponderGrant
+                ? this._onTouchStart as any
+                : undefined,
             onTouchStartCapture: this.props.onTouchStartCapture as React.HTMLAttributes<any>['onTouchStartCapture'],
-            onTouchMove: this.props.onResponderMove as React.HTMLAttributes<any>['onTouchMove'],
+            onTouchMove: this.props.onTouchMove || this.props.onResponderMove ? this._onTouchMove as any : undefined,
             onTouchMoveCapture: this.props.onTouchMoveCapture as React.HTMLAttributes<any>['onTouchMoveCapture'],
-            onTouchEnd: this.props.onResponderRelease,
-            onTouchCancel: this.props.onResponderTerminate,
+            onTouchEnd: this.props.onTouchEnd || this.props.onResponderEnd || this.props.onResponderRelease
+                ? this._onTouchEnd as any
+                : undefined,
+            onTouchEndCapture: this.props.onTouchEndCapture as React.HTMLAttributes<any>['onTouchEndCapture'],
+            onTouchCancel: this.props.onTouchCancel || this.props.onResponderTerminate ? this._onTouchCancel as any : undefined,
+            onTouchCancelCapture: this.props.onTouchCancelCapture as React.HTMLAttributes<any>['onTouchCancelCapture'],
             draggable: this.props.onDragStart ? true : undefined,
             onDragStart: this.props.onDragStart,
             onDrag: this.props.onDrag,
@@ -375,9 +449,13 @@ export class View extends ViewBase<RX.Types.ViewProps, RX.Types.Stateless, RX.Vi
             onDragLeave: this.props.onDragLeave,
             onDrop: this.props.onDrop,
             onClick: this.props.onPress,
+            onClickCapture: this.props.onPressCapture,
             onFocus: this.props.onFocus,
+            onFocusCapture: this.props.onFocusCapture,
             onBlur: this.props.onBlur,
+            onBlurCapture: this.props.onBlurCapture,
             onKeyDown: this.props.onKeyPress,
+            onKeyDownCapture: this.props.onKeyPressCapture,
             id: this.props.id
         };
 

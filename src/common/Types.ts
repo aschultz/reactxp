@@ -644,10 +644,10 @@ export interface ViewPropsShared<C = React.Component> extends CommonProps<C>, Co
     animateChildLeave?: boolean;
     animateChildMove?: boolean;
 
-    onAccessibilityTapIOS?: (e: SyntheticEvent) => void;
-    onLayout?: (e: ViewOnLayoutEvent) => void;
-    onMouseEnter?: (e: MouseEvent) => void;
-    onMouseLeave?: (e: MouseEvent) => void;
+    // Mouse-specific Events
+    // For drag specific events, if onDragStart is present, the view is draggable.
+    // onDragStart/onDrag/onDragEnd are source specific events
+    // onDragEnter/onDragOver/onDragLeave/onDrop are destination specific events
     onDragStart?: (e: DragEvent) => void;
     onDrag?: (e: DragEvent) => void;
     onDragEnd?: (e: DragEvent) => void;
@@ -655,35 +655,67 @@ export interface ViewPropsShared<C = React.Component> extends CommonProps<C>, Co
     onDragOver?: (e: DragEvent) => void;
     onDragLeave?: (e: DragEvent) => void;
     onDrop?: (e: DragEvent) => void;
+    onMouseEnter?: (e: MouseEvent) => void;
+    onMouseLeave?: (e: MouseEvent) => void;
     onMouseOver?: (e: MouseEvent) => void;
     onMouseMove?: (e: MouseEvent) => void;
 
+    // Mouse & Touch Events
+    onPressIn?: (e: SyntheticEvent) => void;
+    onPressInCapture?: (e: SyntheticEvent) => void;
+    onPressOut?: (e: SyntheticEvent) => void;
+    onPressOutCapture?: (e: SyntheticEvent) => void;
     onPress?: (e: SyntheticEvent) => void;
-    onLongPress?: (e: SyntheticEvent) => void;
-    onKeyPress?: (e: KeyboardEvent) => void;
+    onPressCapture?: (e: SyntheticEvent) => void;
+    onLongPress?: (e: SyntheticEvent) => void; // Native-only
+    onContextMenu?: (e: MouseEvent) => void; // Right-click
+    onContextMenuCapture?: (e: MouseEvent) => void;
+
+    // Focus Events
     onFocus?: (e: FocusEvent) => void;
+    onFocusCapture?: (e: FocusEvent) => void;
     onBlur?: (e: FocusEvent) => void;
+    onBlurCapture?: (e: FocusEvent) => void;
+
+    // Keyboard Events
+    onKeyPress?: (e: KeyboardEvent) => void;
+    onKeyPressCapture?: (e: KeyboardEvent) => void;
 
     // iOS and Android only. Visual touchfeedback properties
     disableTouchOpacityAnimation?: boolean;
     activeOpacity?: number;
     underlayColor?: string;
 
-    onContextMenu?: (e: MouseEvent) => void;
+    // W3C Touch Events
+    onTouchStart?: (e: TouchEvent) => void;
+    onTouchStartCapture?: (e: TouchEvent) => void;
+    onTouchMove?: (e: TouchEvent) => void;
+    onTouchMoveCapture?: (e: TouchEvent) => void;
+    onTouchEnd?: (e: TouchEvent) => void;
+    onTouchEndCapture?: (e: TouchEvent) => void;
+    onTouchCancel?: (e: TouchEvent) => void;
+    onTouchCancelCapture?: (e: TouchEvent) => void;
+
+    // React-Native Gesture Responder system
+    // See https://facebook.github.io/react-native/docs/gesture-responder-system for details
     onStartShouldSetResponder?: (e: SyntheticEvent) => boolean;
-    onMoveShouldSetResponder?: (e: SyntheticEvent) => boolean;
     onStartShouldSetResponderCapture?: (e: SyntheticEvent) => boolean;
+    onMoveShouldSetResponder?: (e: SyntheticEvent) => boolean;
     onMoveShouldSetResponderCapture?: (e: SyntheticEvent) => boolean;
     onResponderGrant?: (e: SyntheticEvent) => void;
     onResponderReject?: (e: SyntheticEvent) => void;
     onResponderRelease?: (e: SyntheticEvent) => void;
-    onResponderStart?: (e: TouchEvent) => void;
-    onResponderMove?: (e: TouchEvent) => void;
-    onTouchStartCapture?: (e: TouchEvent) => void;
-    onTouchMoveCapture?: (e: TouchEvent) => void;
-    onResponderEnd?: (e: TouchEvent) => void;
     onResponderTerminate?: (e: SyntheticEvent) => void;
     onResponderTerminationRequest?: (e: SyntheticEvent) => boolean;
+
+    // Undocumented React-Native Gesture Responder events
+    onResponderStart?: (e: TouchEvent) => void;
+    onResponderEnd?: (e: TouchEvent) => void;
+    onResponderMove?: (e: TouchEvent) => void;
+
+    // Other events
+    onLayout?: (e: ViewOnLayoutEvent) => void;
+    onAccessibilityTapIOS?: (e: SyntheticEvent) => void;
 }
 
 export interface ViewProps extends ViewPropsShared<RX.View> {

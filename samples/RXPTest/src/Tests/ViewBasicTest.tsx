@@ -6,13 +6,17 @@ import RX = require('reactxp');
 
 import * as CommonStyles from '../CommonStyles';
 import { Test, TestResult, TestType } from '../Test';
+import { ButtonViewTest } from './ViewTestComponents/ButtonViewTest';
+import { LongPressTest } from './ViewTestComponents/LongPressTest';
+import { CapturePhaseTest } from './ViewTestComponents/CapturePhaseTest';
 
 const _styles = {
     container: RX.Styles.createViewStyle({
         flex: 1,
         alignSelf: 'stretch',
         flexDirection: 'column',
-        alignItems: 'flex-start'
+        alignItems: 'flex-start',
+        marginHorizontal: 20,
     }),
     view1: RX.Styles.createViewStyle({
         margin: 20,
@@ -53,7 +57,7 @@ const _styles = {
         shadowRadius: 5
     }),
     explainTextContainer: RX.Styles.createViewStyle({
-        margin: 12
+        marginTop: 12
     }),
     explainText: RX.Styles.createTextStyle({
         fontSize: CommonStyles.generalFontSize,
@@ -219,6 +223,10 @@ class BasicView extends RX.Component<RX.CommonProps, RX.Stateless> {
                     </RX.Text>
                 </RX.View>
                 <RX.View style={ _styles.view4 } />
+
+                <ButtonViewTest />
+                <LongPressTest />
+                <CapturePhaseTest />
             </RX.View>
         );
     }

@@ -148,7 +148,9 @@ class ViewTouch extends RX.Component<RX.CommonProps, TouchViewState> {
                 </RX.View>
                 <RX.View
                     style={ _styles.testContainer1 }
-                    onPress={ e => this.setState({ pressEvent: _.clone(e.nativeEvent as RX.Types.TouchEvent)}) }
+                    onPress={ e => {
+                        this.setState({ pressEvent: _.cloneDeep(e as RX.Types.TouchEvent)});
+                     }}
                 >
                     <RX.Text style={ _styles.labelText }>
                         { 'onPress: ' + ViewTouch.getTouchEventText(this.state.pressEvent) }

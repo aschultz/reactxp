@@ -372,6 +372,9 @@ export class View extends ViewBase<RX.Types.ViewProps, RX.Types.Stateless, RN.Vi
         if (props.onKeyPress) {
             this._internalProps.onKeyPress = this._onKeyPress;
         }
+        if (props.onKeyPressCapture) {
+            this._internalProps.onKeyPressCapture = this._onKeyPressCapture;
+        }
 
         const baseStyle = this._getStyles(props);
         this._internalProps.style = baseStyle;
@@ -409,6 +412,12 @@ export class View extends ViewBase<RX.Types.ViewProps, RX.Types.Stateless, RN.Vi
     private _onKeyPress = (e: RN.NativeSyntheticEvent<RN.TextInputKeyPressEventData>) => {
         if (this.props.onKeyPress) {
             this.props.onKeyPress(EventHelpers.toKeyboardEvent(e));
+        }
+    }
+
+    private _onKeyPressCapture = (e: RN.NativeSyntheticEvent<RN.TextInputKeyPressEventData>) => {
+        if (this.props.onKeyPressCapture) {
+            this.props.onKeyPressCapture(EventHelpers.toKeyboardEvent(e));
         }
     }
 
@@ -469,7 +478,7 @@ export class View extends ViewBase<RX.Types.ViewProps, RX.Types.Stateless, RN.Vi
     }
 
     protected _isButton(viewProps: RX.Types.ViewProps): boolean {
-        return !!(viewProps.onPress || viewProps.onLongPress);
+        return !!(viewProps.onPress || viewProps.onLongPress || viewProps.onPressIn || viewProps.onPressOut);
     }
 
     private _updateFocusArbitratorProvider(props: RX.Types.ViewProps) {
@@ -536,6 +545,10 @@ export class View extends ViewBase<RX.Types.ViewProps, RX.Types.Stateless, RN.Vi
                 this._opacityActive(_activeOpacityAnimationDuration);
             }
         }
+
+        if (this.props.onPressIn) {
+            this.props.onPressIn(EventHelpers.toMouseEvent(e));
+        }
     }
 
     touchableHandleActivePressOut(e: RX.Types.SyntheticEvent): void {
@@ -550,6 +563,10 @@ export class View extends ViewBase<RX.Types.ViewProps, RX.Types.Stateless, RN.Vi
             if (!this.props.disableTouchOpacityAnimation && (this.props.activeOpacity || !this.props.underlayColor)) {
                 this._opacityInactive(_inactiveOpacityAnimationDuration);
             }
+        }
+
+        if (this.props.onPressOut) {
+            this.props.onPressOut(EventHelpers.toMouseEvent(e));
         }
     }
 

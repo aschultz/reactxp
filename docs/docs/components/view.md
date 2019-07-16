@@ -131,20 +131,41 @@ onMouseMove: (e: MouseEvent) => void = undefined;
 onMouseOver: (e: MouseEvent) => void = undefined;
 
 // Mouse & Touch Events
-onContextMenu: (e: React.SyntheticEvent) => void;
+onPressIn: (e: SyntheticEvent) => void = undefined;
+onPressInCapture: (e: SyntheticEvent) => void = undefined;
+onPressOut: (e: SyntheticEvent) => void = undefined;
+onPressOutCapture: (e: SyntheticEvent) => void = undefined;
 onPress: (e: SyntheticEvent) => void = undefined;
+onPressCapture: (e: SyntheticEvent) => void = undefined;
+onLongPress: (e: SyntheticEvent) => void = undefined; // Native-only
+onContextMenu: (e: React.SyntheticEvent) => void; // Right-click
 
 // Focus Events
 onFocus: (e: FocusEvent) => void = undefined;
+onFocusCapture: (e: FocusEvent) => void = undefined;
 onBlur: (e: FocusEvent) => void = undefined;
+onBlurCapture: (e: FocusEvent) => void = undefined;
 
 // Keyboard Events
 onKeyPress: (e: KeyboardEvent) => void = undefined;
+onKeyPressCapture: (e: KeyboardEvent) => void = undefined;
 
-// Touch-specific Events
-onTouchStartCapture: (e: React.SyntheticEvent) => void = undefined;
-onTouchMoveCapture: (e: React.SyntheticEvent) => void = undefined;
-onLongPress: (e: SyntheticEvent) => void = undefined;
+// W3C Touch Events
+onTouchStart: (e: React.TouchEvent) => void = undefined;
+onTouchStartCapture: (e: React.TouchEvent) => void = undefined;
+onTouchMove: (e: React.TouchEvent) => void = undefined;
+onTouchMoveCapture: (e: React.TouchEvent) => void = undefined;
+onTouchEnd: (e: React.TouchEvent) => void = undefined;
+onTouchEndCapture: (e: React.TouchEvent) => void = undefined;
+onTouchCancel: (e: React.TouchEvent) => void = undefined;
+onTouchCancelCapture: (e: React.TouchEvent) => void = undefined;
+
+// React-Native Gesture Responder system
+// See https://facebook.github.io/react-native/docs/gesture-responder-system for details
+onStartShouldSetResponder: (e: React.SyntheticEvent) => boolean =
+    undefined;
+onStartShouldSetResponderCapture: (e: React.SyntheticEvent) => boolean =
+    undefined;
 onMoveShouldSetResponder: (e: React.SyntheticEvent) => boolean =
     undefined;
 onMoveShouldSetResponderCapture: (e: React.SyntheticEvent) => boolean =
@@ -152,19 +173,21 @@ onMoveShouldSetResponderCapture: (e: React.SyntheticEvent) => boolean =
 onResponderGrant: (e: React.SyntheticEvent) => void = undefined;
 onResponderReject: (e: React.SyntheticEvent) => void = undefined;
 onResponderRelease: (e: React.SyntheticEvent) => void = undefined;
-onResponderStart: (e: React.TouchEvent) => void = undefined;
-onResponderMove: (e: React.TouchEvent) => void = undefined;
-onResponderEnd: (e: React.TouchEvent) => void = undefined;
 onResponderTerminate: (e: React.SyntheticEvent) => void = undefined;
 onResponderTerminationRequest: (e: React.SyntheticEvent) => boolean =
     undefined;
-onStartShouldSetResponder: (e: React.SyntheticEvent) => boolean =
-    undefined;
-onStartShouldSetResponderCapture: (e: React.SyntheticEvent) => boolean =
-    undefined;
+
+// Undocumented React-Native Gesture Responder events
+onResponderStart: (e: React.TouchEvent) => void = undefined;
+onResponderMove: (e: React.TouchEvent) => void = undefined;
+onResponderEnd: (e: React.TouchEvent) => void = undefined;
 
 // Other Events
 onLayout: (e: ViewOnLayoutEvent) => void = undefined;
+
+// Called when VoiceOver is on and the user double tapped to
+// activate a control
+onAccessibilityTapIOS: (e: SyntheticEvent) => void; // iOS Only
 
 // Rasterize contents using offscreen bitmap (perf optimization)
 shouldRasterizeIOS: boolean = false; // iOS only
