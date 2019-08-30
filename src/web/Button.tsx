@@ -89,6 +89,22 @@ export class Button extends ButtonBase {
         const isAriaHidden = AccessibilityUtil.isHidden(this.props.importantForAccessibility);
         const ariaHasPopup = AccessibilityUtil.accessibilityTraitToAriaHasPopup(this.props.accessibilityTraits);
 
+        // Use W3C Pointer Events when available
+        const pointerEvents = window.PointerEvent !== undefined ? {
+            onPointerEnter:  this._onMouseEnter,
+            onPointerLeave: this._onMouseLeave,
+            onPointerDown: this._onMouseDown,
+            onPointerUp: this._onMouseUp
+        } : {
+            onMouseEnter: this._onMouseEnter,
+            onMouseLeave: this._onMouseLeave,
+            onMouseDown: this._onMouseDown,
+            onMouseUp: this._onMouseUp,
+            onTouchStart: this._onMouseDown,
+            onTouchMove: this._onTouchMove,
+            onTouchEnd: this._onTouchEnd
+        };
+
         // NOTE: We use tabIndex=0 to support focus.
         return (
             <button
@@ -103,17 +119,11 @@ export class Button extends ButtonBase {
                 aria-selected={ ariaSelected }
                 aria-checked={ ariaChecked }
                 onClick={ this.onClick }
-                onTouchStart={ this._onMouseDown }
-                onTouchMove={ this._onTouchMove }
-                onTouchEnd={ this._onTouchEnd }
                 onContextMenu={ this._onContextMenu }
-                onMouseDown={ this._onMouseDown }
-                onMouseUp={ this._onMouseUp }
-                onMouseEnter={ this._onMouseEnter }
-                onMouseLeave={ this._onMouseLeave }
                 onFocus={ this._onFocus }
                 onBlur={ this._onBlur }
                 onKeyDown={ this.props.onKeyPress }
+                { ...pointerEvents }
                 disabled={ this.props.disabled }
                 aria-haspopup={ ariaHasPopup }
                 aria-controls={ this.props.ariaControls }

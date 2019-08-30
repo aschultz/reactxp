@@ -342,6 +342,19 @@ export class View extends ViewBase<RX.Types.ViewProps, RX.Types.Stateless, RX.Vi
             ariaRole = 'none';
         }
 
+        // Use W3C Pointer Events when available
+        const pointerEvents = window.PointerEvent !== undefined ? {
+            onPointerEnter:  this.props.onMouseEnter,
+            onPointerLeave: this.props.onMouseLeave,
+            onPointerOver: this.props.onMouseOver,
+            onPointerMove: this.props.onMouseMove
+        } : {
+            onMouseEnter: this.props.onMouseEnter,
+            onMouseLeave: this.props.onMouseLeave,
+            onMouseOver: this.props.onMouseOver,
+            onMouseMove: this.props.onMouseMove
+        };
+
         const props: React.HTMLAttributes<any> = {
             role: ariaRole,
             tabIndex: tabIndex,
@@ -355,10 +368,7 @@ export class View extends ViewBase<RX.Types.ViewProps, RX.Types.Stateless, RX.Vi
             'aria-live': ariaLive,
             'aria-valuenow': ariaValueNow,
             onContextMenu: this.props.onContextMenu,
-            onMouseEnter: this.props.onMouseEnter,
-            onMouseLeave: this.props.onMouseLeave,
-            onMouseOver: this.props.onMouseOver,
-            onMouseMove: this.props.onMouseMove,
+            ...pointerEvents,
             // Weird things happen: ReactXP.Types.Touch is not assignable to React.Touch
             onTouchStart: this.props.onResponderStart as React.HTMLAttributes<any>['onTouchStart'],
             onTouchStartCapture: this.props.onTouchStartCapture as React.HTMLAttributes<any>['onTouchStartCapture'],
